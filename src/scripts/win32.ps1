@@ -110,9 +110,9 @@ Function Add-Tool() {
     } catch { }
   }
   if($tool -eq "phive") {
-    Add-Extension curl >$null 2>&1
-    Add-Extension mbstring >$null 2>&1
-    Add-Extension xml >$null 2>&1
+    Add-Extension curl 
+    Add-Extension mbstring 
+    Add-Extension xml 
   }
   if($tool -eq "cs2pr") {
     (Get-Content $php_dir/cs2pr).replace('exit(9)', 'exit(0)') | Set-Content $php_dir/cs2pr
@@ -142,7 +142,7 @@ Function Add-Composer-Tool() {
     [string]
     $prefix
   )
-  composer -q global require $prefix$release 2>&1 | out-null
+  composer -q global require $prefix$release 
   if($?) {
     $composer_dir = composer -q global config home | ForEach-Object { $_ -replace "/", "\" }
     Add-Content -Path $PsHome\profile.ps1 -Value "New-Alias $tool $composer_dir\vendor\bin\$tool.bat"
@@ -192,9 +192,9 @@ if ($null -eq $installed -or -not("$($installed.Version).".StartsWith(($version 
     $version = 'master'
   }
 
-  Install-Php -Version $version -Architecture $arch -ThreadSafe $ts -InstallVC -Path $php_dir -TimeZone UTC -InitialPhpIni Production -Force >$null 2>&1
+  Install-Php -Version $version -Architecture $arch -ThreadSafe $ts -InstallVC -Path $php_dir -TimeZone UTC -InitialPhpIni Production -Force 
 } else {
-  $updated = Update-Php $php_dir >$null 2>&1
+  $updated = Update-Php $php_dir 
   if($updated -eq $False) {
     $status = "Found"
   }

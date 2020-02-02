@@ -20,7 +20,7 @@ add_log() {
 remove_extension() {
   extension=$1
   sudo sed -i '' "/$extension/d" "$ini_file"
-  sudo rm -rf "$ext_dir"/"$extension".so >/dev/null 2>&1
+  sudo rm -rf "$ext_dir"/"$extension".so 
 }
 
 # Function to setup extensions
@@ -33,7 +33,7 @@ add_extension() {
   elif php -m | grep -i -q -w "$extension"; then
     add_log "$tick" "$extension" "Enabled"
   elif ! php -m | grep -i -q -w "$extension"; then
-    (eval "$install_command" >/dev/null 2>&1 && add_log "$tick" "$extension" "Installed and enabled") ||
+    (eval "$install_command"  && add_log "$tick" "$extension" "Installed and enabled") ||
     add_log "$cross" "$extension" "Could not install $extension on PHP $semver"
   fi
 }
@@ -83,7 +83,7 @@ add_tool() {
   url=$1
   tool=$2
   if [ "$tool" = "composer" ]; then
-    brew install composer >/dev/null 2>&1
+    brew install composer 
     composer -q global config process-timeout 0
     add_log "$tick" "$tool" "Added"
   else
@@ -96,12 +96,12 @@ add_tool() {
     if [ "$status_code" = "200" ]; then
       sudo chmod a+x "$tool_path"
       if [ "$tool" = "phive" ]; then
-        add_extension curl >/dev/null 2>&1
-        add_extension mbstring >/dev/null 2>&1
-        add_extension xml >/dev/null 2>&1
+        add_extension curl 
+        add_extension mbstring 
+        add_extension xml 
       elif [ "$tool" = "cs2pr" ]; then
         sudo sed -i '' 's/exit(9)/exit(0)/' "$tool_path"
-        tr -d '\r' < "$tool_path" | sudo tee "$tool_path" >/dev/null 2>&1
+        tr -d '\r' < "$tool_path" | sudo tee "$tool_path" 
       fi
       add_log "$tick" "$tool" "Added"
     else
@@ -116,7 +116,7 @@ add_composer_tool() {
   release=$2
   prefix=$3
   (
-    composer global require "$prefix$release" >/dev/null 2>&1 &&
+    composer global require "$prefix$release"  &&
     sudo ln -sf "$(composer -q global config home)"/vendor/bin/"$tool" /usr/local/bin/"$tool" &&
     add_log "$tick" "$tool" "Added"
   ) || add_log "$cross" "$tool" "Could not setup $tool"
@@ -125,9 +125,9 @@ add_composer_tool() {
 # Function to configure PECL
 configure_pecl() {
   for tool in pear pecl; do
-    sudo "$tool" config-set php_ini "$ini_file" >/dev/null 2>&1
-    sudo "$tool" config-set auto_discover 1 >/dev/null 2>&1
-    sudo "$tool" channel-update "$tool".php.net >/dev/null 2>&1
+    sudo "$tool" config-set php_ini "$ini_file" 
+    sudo "$tool" config-set auto_discover 1 
+    sudo "$tool" channel-update "$tool".php.net 
   done
 }
 
@@ -139,9 +139,9 @@ add_pecl() {
 # Function to setup PHP and composer
 setup_php_and_composer() {
   export HOMEBREW_NO_INSTALL_CLEANUP=TRUE
-  brew tap shivammathur/homebrew-php >/dev/null 2>&1
-  brew install shivammathur/php/php@"$version" >/dev/null 2>&1
-  brew link --force --overwrite php@"$version" >/dev/null 2>&1
+  brew tap shivammathur/homebrew-php 
+  brew install shivammathur/php/php@"$version" 
+  brew link --force --overwrite php@"$version" 
 }
 
 # Variables
